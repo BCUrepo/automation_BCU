@@ -1,0 +1,40 @@
+---
+- name: Configure EIGRP between R1 and R2
+  hosts: R1
+  gather_facts: no
+  vars:
+    router1: "R1"
+    router2: "R2"
+    eigrp_as: 10
+    router1_int: "GigabitEthernet0/0"
+    router2_int: "GigabitEthernet0/1"
+    network_address: "192.168.2.0"
+    network_mask: "255.255.255.0"
+  tasks:
+  - name: Configure EIGRP on R1
+    ios_config:
+      lines:
+        - router eigrp {{ eigrp_as }}
+        - network {{ network_address }} {{ network_mask }}
+        - passive-interface default
+        - no passive-interface {{ router1_int }}
+      parents: interface {{ router1_int }}
+    register: r1_eigrp_config
+
+  - name: Configure EIGRP on R2
+    ios_config:
+      lines:
+        - router eigrp {{ eigrp_as }}
+        - network {{ network_address }} {{ network_mask }}
+        - passive-interface default
+        - no passive-interface {{ router2_int }}
+      parents: interface {{ router2_int }}
+    register: r2_eigrp_config
+
+  - name: Display EIGRP configuration on R1
+    debug:
+      var: r1_eigrp_config
+
+  - name: Display EIGRP configuration on R2
+    debug:
+      var: r2_eigrp_config

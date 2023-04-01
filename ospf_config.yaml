@@ -1,0 +1,35 @@
+---
+- name: Configure OSPF routing between R2 and R3
+  hosts: R2
+  gather_facts: no
+
+  tasks:
+    - name: Configure OSPF on R2
+      ios_config:
+        lines:
+          - router ospf 1
+          - network 192.168.1.0 0.0.0.255 area 0
+          - network 192.168.2.0 0.0.0.255 area 0
+        parents: router ospf 1
+        provider:
+          host: "{{ inventory_hostname }}"
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+      when: inventory_hostname == "R2"
+
+- hosts: R3
+  gather_facts: no
+
+  tasks:
+    - name: Configure OSPF on R3
+      ios_config:
+        lines:
+          - router ospf 1
+          - network 192.168.2.0 0.0.0.255 area 0
+          - network 192.168.3.0 0.0.0.255 area 0
+        parents: router ospf 1
+        provider:
+          host: "{{ inventory_hostname }}"
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+      when: inventory_hostname == "R3"

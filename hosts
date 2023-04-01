@@ -1,0 +1,6 @@
+                                 
+R1 ansible_hosts=192.168.1.1
+R2 ansible_hosts=192.168.2.1
+R3 anisble_hosts=192.168.3.1
+R4 ansible_hosts=192.168.4.1
+
